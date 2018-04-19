@@ -1,0 +1,39 @@
+version: '2.1'
+
+services:
+  bitcoind:
+    container_name: bitcoind2
+    image: ruimarinho/bitcoin-core:0.16.0-alpine
+    networks:
+      btc_lightning_net:
+        ipv4_address: ${BITCOIND_IPV4:-172.19.1.10}
+    volumes:
+      - 'bitcoin-data:/home/bitcoin/.bitcoin'
+    command: -printtoconsole -testnet -txindex -zmqpubrawblock=tcp://0.0.0.0:28332 -zmqpubrawtx=tcp://0.0.0.0:28332 -rpcbind=0.0.0.0 -rpcallowip=${RPCALLOWIP:-172.19.1.0/24} -rpcuser=${RPCUSER:-foo} -rpcpassword=${RPCPASSWORD:-bar}
+    restart: "unless-stopped"
+
+  lnd:
+    container_name: lnd
+    image: fuzzle/lnd:latest
+    networks:
+      btc_lightning_net:
+        ipv4_address: 172.19.1.20
+    ports:
+      - 9735:9735
+    volumes:
+      - 'lnd-data:/root/.lnd'
+    entrypoint: []
+    command: lnd --noencryptwallet --logdir=/root/.lnd --alias="F-U-Z-Z-L-E" --color="#BB28F1" --bitcoin.active --bitcoin.testnet --bitcoin.node=bitcoind --bitcoind.rpchost=bitcoind2 --bitcoind.rpcuser=foo --bitcoind.rpcpass=bar --bitcoind.zmqpath=tcp://bitcoind2:28332 --debuglevel=info --externalip=lightning.fuzzle.ch
+
+networks:
+  btc_lightning_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.19.1.0/24
+
+volumes:
+  bitcoin-data:
+  lnd-data:
+
