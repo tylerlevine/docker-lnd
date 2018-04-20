@@ -9,4 +9,8 @@ jobs:
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - ./travis-build-command.sh
       - docker push fuzzle/lnd
-
+    - stage: build lnd-ext docker image
+      before_script: cd lnd-ext
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - ./docker-build-command.sh
+      - docker push fuzzle/lnd-ext

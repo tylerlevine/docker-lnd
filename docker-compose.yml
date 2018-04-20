@@ -14,16 +14,27 @@ services:
 
   lnd:
     container_name: lnd
-    image: fuzzle/lnd:latest
+    image: fuzzle/lnd-ext:latest
     networks:
       btc_lightning_net:
-        ipv4_address: 172.19.1.20
+        ipv4_address: ${LND_IPV4:-172.19.1.20}
     ports:
       - 9735:9735
     volumes:
       - 'lnd-data:/root/.lnd'
-    entrypoint: []
-    command: lnd --noencryptwallet --logdir=/root/.lnd --alias="F-U-Z-Z-L-E" --color="#BB28F1" --bitcoin.active --bitcoin.testnet --bitcoin.node=bitcoind --bitcoind.rpchost=bitcoind2 --bitcoind.rpcuser=foo --bitcoind.rpcpass=bar --bitcoind.zmqpath=tcp://bitcoind2:28332 --debuglevel=info --externalip=lightning.fuzzle.ch
+    environment:
+    - NOENCRYPTWALLET=y
+    - ALIAS=F-U-Z-Z-L-E
+    - COLOR=#BB28F1
+    - BITCOIN_ACTIVE=y
+    - BITCOIN_TESTNET=y
+    - BITCOIN_NODE=bitcoind
+    - BITCOIND_RPCHOST=bitcoind2
+    - BITCOIND_RPCUSER=foo
+    - BITCOIND_RPCPASS=bar
+    - BITCOIND_ZMQPATH=tcp://bitcoind2:28332
+    - DEBUGLEVEL=info
+    - EXTERNALIP=lightning.fuzzle.ch
 
 networks:
   btc_lightning_net:
