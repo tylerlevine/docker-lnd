@@ -5,6 +5,6 @@ set -e
 
 mkdir -p docker/lnd
 
-lnd/download-lnd-docker-files.sh
-lnd/docker-build-command.sh
+./download-lnd-docker-files.sh
+./docker-build-command.sh
 

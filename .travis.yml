@@ -4,6 +4,7 @@ dist: trusty
 jobs:
   include:
     - stage: build lnd docker image
+      before_script: cd lnd
       script:
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - ./travis-build-command.sh
