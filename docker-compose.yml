@@ -2,11 +2,11 @@ version: '2.1'
 
 services:
   bitcoind:
-    container_name: bitcoind2
+    container_name: bitcoind-testnet
     image: ruimarinho/bitcoin-core:0.16.0-alpine
     networks:
       btc_lightning_net:
-        ipv4_address: ${BITCOIND_IPV4:-172.19.1.10}
+        ipv4_address: ${BITCOIND_IPV4:-172.19.1.110}
     volumes:
       - 'bitcoin-data:/home/bitcoin/.bitcoin'
     command: -printtoconsole -testnet -txindex -zmqpubrawblock=tcp://0.0.0.0:28332 -zmqpubrawtx=tcp://0.0.0.0:28332 -rpcbind=0.0.0.0 -rpcallowip=${RPCALLOWIP:-172.19.1.0/24} -rpcuser=${RPCUSER:-foo} -rpcpassword=${RPCPASSWORD:-bar}
@@ -17,24 +17,24 @@ services:
     image: fuzzle/lnd-ext:latest
     networks:
       btc_lightning_net:
-        ipv4_address: ${LND_IPV4:-172.19.1.20}
+        ipv4_address: ${LND_IPV4:-172.19.1.120}
     ports:
       - 9735:9735
     volumes:
       - 'lnd-data:/root/.lnd'
     environment:
     - NOENCRYPTWALLET=y
-    - ALIAS=F-U-Z-Z-L-E
+    - ALIAS=${ALIAS}
     - COLOR=#BB28F1
     - BITCOIN_ACTIVE=y
     - BITCOIN_TESTNET=y
     - BITCOIN_NODE=bitcoind
-    - BITCOIND_RPCHOST=bitcoind2
-    - BITCOIND_RPCUSER=foo
-    - BITCOIND_RPCPASS=bar
-    - BITCOIND_ZMQPATH=tcp://bitcoind2:28332
+    - BITCOIND_RPCHOST=bitcoind-testnet
+    - BITCOIND_RPCUSER=${RPCUSER:-foo}
+    - BITCOIND_RPCPASS=${RPCPASSWORD:-bar}
+    - BITCOIND_ZMQPATH=tcp://bitcoind-testnet:28332
     - DEBUGLEVEL=info
-    - EXTERNALIP=lightning.fuzzle.ch
+    - EXTERNALIP=${EXTERNAL_IP:-lightning.example.com}
 
 networks:
   btc_lightning_net:
@@ -47,4 +47,3 @@ networks:
 volumes:
   bitcoin-data:
   lnd-data:
-
