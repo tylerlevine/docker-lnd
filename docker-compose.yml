@@ -35,6 +35,10 @@ services:
     - BITCOIND_ZMQPATH=tcp://bitcoind-testnet:28332
     - DEBUGLEVEL=info
     - EXTERNALIP=${EXTERNAL_IP:-lightning.example.com}
+    #- AUTOPILOT_ACTIVE=y
+    #- AUTOPILOT_ALLOCATION=0.9
+    #- AUTOPILOT_MINCHANSIZE=10
+    #- AUTOPILOT_MAXCHANSIZE=50
 
 networks:
   btc_lightning_net:
