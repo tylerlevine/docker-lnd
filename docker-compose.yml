@@ -36,6 +36,22 @@ services:
     - DEBUGLEVEL=info
     - EXTERNALIP=${EXTERNAL_IP:-lightning.example.com}
 
+  lnd-web-client:
+    container_name: lnd-web-client
+    image: fuzzle/abc:latest
+    networks:
+     btc_lightning_net:
+       ipv4_address: ${LND_WEB_CLIENT_IPV4:-172.19.1.130}
+    environment:
+      - SET_SERVERHOST=lnd-web.fuzzle.ch
+      - LE_EMAIL=a.lingenhag@gmail.com
+      - SET_LNDHOST=${LND_IPV4:-172.19.1.120}
+
+    volumes:
+      - 'lnd-data:/config'
+    ports:
+      - 8280:8280
+
 networks:
   btc_lightning_net:
     driver: bridge
