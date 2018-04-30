@@ -115,6 +115,28 @@ add_if_exists() {
   fi
 }
 
+if [ ! -f /etc/ssl/openssl.cnf.edited ]; then
+    sed -i 's/# req_extensions/req_extensions/' /etc/ssl/openssl.cnf
+    sed -i 's/# copy_extensions/copy_extensions/' /etc/ssl/openssl.cnf
+    sed -i '/\[ v3_req \]/a subjectAltName = @alt_names' /etc/ssl/openssl.cnf
+    echo "[ alt_names ]" >> /etc/ssl/openssl.cnf
+    echo "DNS.1 = localhost" >> /etc/ssl/openssl.cnf
+    echo "DNS.2 = lnd" >> /etc/ssl/openssl.cnf
+    echo "DNS.3 = $EXTERNALIP" >> /etc/ssl/openssl.cnf
+    touch /etc/ssl/openssl.cnf.edited
+fi
+
+cd /root/.lnd/
+if [ ! -f tls.key ]; then
+    openssl ecparam -genkey -name prime256v1 -out tls.key
+fi
+if [ ! -f csr.csr ]; then
+    openssl req -new -sha256 -key tls.key -out csr.csr -subj '/CN=localhost/O=lnd'
+fi
+if [ ! -f tls.cert ]; then
+    openssl req -x509 -sha256 -days 36500 -key tls.key -in csr.csr -out tls.cert -extensions v3_req
+fi
+
 for lala in "${!cli_opts[@]}"; do add_if_exists "$lala"; done
 echo "Starting lnd with the following options:" ${CLI_ARGS[@]} "$@"
 exec lnd ${CLI_ARGS[@]} "$@"
