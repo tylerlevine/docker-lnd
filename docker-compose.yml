@@ -1,5 +1,4 @@
 version: '2.1'
-
 services:
   bitcoind:
     container_name: bitcoind-testnet
@@ -8,7 +7,7 @@ services:
       btc_lightning_net:
         ipv4_address: ${BITCOIND_IPV4:-172.19.1.110}
     volumes:
-      - 'bitcoin-data:/home/bitcoin/.bitcoin'
+      - "${BITCOIND_DATA_PATH:-bitcoin-data}:/home/bitcoin/.bitcoin"
     command: -printtoconsole -testnet -txindex -zmqpubrawblock=tcp://0.0.0.0:28332 -zmqpubrawtx=tcp://0.0.0.0:28332 -rpcbind=0.0.0.0 -rpcallowip=${RPCALLOWIP:-172.19.1.0/24} -rpcuser=${RPCUSER:-foo} -rpcpassword=${RPCPASSWORD:-bar}
     restart: "unless-stopped"
 
@@ -21,7 +20,7 @@ services:
     ports:
       - 9735:9735
     volumes:
-      - 'lnd-data:/root/.lnd'
+      - "${LND_DATA_PATH:-lnd-data}:/root/.lnd"
     environment:
     - NOENCRYPTWALLET=y
     - ALIAS=${ALIAS}
@@ -35,11 +34,34 @@ services:
     - BITCOIND_ZMQPATH=tcp://bitcoind-testnet:28332
     - DEBUGLEVEL=info
     - EXTERNALIP=${EXTERNAL_IP:-lightning.example.com}
-    #- AUTOPILOT_ACTIVE=y
+    - RESTLISTEN=0.0.0.0:8080
+    - RPCLISTEN=0.0.0.0:10009
+    #- AUTOPILOT_ACTIVE=n
     #- AUTOPILOT_ALLOCATION=0.9
     #- AUTOPILOT_MINCHANSIZE=10
     #- AUTOPILOT_MAXCHANSIZE=50
-
+  lnd-gui:
+    container_name: lnd-gui
+    image: fuzzle/lnd-gui:latest
+    networks:
+      btc_lightning_net:
+        ipv4_address: ${LNDGUI_IPV4:-172.19.1.130}
+    ports:
+      - 8888:80
+  lnd-rest:
+    container_name: lnd-rest
+    image: fuzzle/lnd-rest:latest
+    networks:
+      btc_lightning_net:
+        ipv4_address: ${LNDREST_IPV4:-172.19.1.140}
+    volumes:
+      - "${LND_DATA_PATH:-lnd-data}:/root/.lnd"
+    environment:
+      - LND_HOST=${LNDREST_LND_HOST:-lnd}
+      - LND_RPC_PORT=${LNDREST_LND_PORT:-10009}
+      - CERT_PATH=/root/.lnd/tls.cert
+      - READONLY_MACAROON_PATH=/root/.lnd/readonly.macaroon
+      - INVOICE_MACAROON_PATH=/root/.lnd/invoice.macaroon
 networks:
   btc_lightning_net:
     driver: bridge
