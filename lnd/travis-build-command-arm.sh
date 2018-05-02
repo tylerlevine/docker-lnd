@@ -6,4 +6,4 @@ set -e
 mkdir -p docker/lnd
 
 ./download-lnd-docker-files.sh
-./docker-build-command.sh
+./docker-build-arm-command.sh
