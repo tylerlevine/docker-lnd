@@ -2,13 +2,13 @@ version: '2.1'
 services:
   bitcoind:
     container_name: bitcoind-testnet
-    image: ruimarinho/bitcoin-core:0.16.0-alpine
+    image: ruimarinho/bitcoin-core:0.16.2-alpine
     networks:
       btc_lightning_net:
         ipv4_address: ${BITCOIND_IPV4:-172.19.1.110}
     volumes:
       - "${BITCOIND_DATA_PATH:-bitcoin-data}:/home/bitcoin/.bitcoin"
-    command: -printtoconsole -testnet -txindex -zmqpubrawblock=tcp://0.0.0.0:28332 -zmqpubrawtx=tcp://0.0.0.0:28332 -rpcbind=0.0.0.0 -rpcallowip=${RPCALLOWIP:-172.19.1.0/24} -rpcuser=${RPCUSER:-foo} -rpcpassword=${RPCPASSWORD:-bar}
+    command: -printtoconsole -testnet -txindex -zmqpubrawblock=tcp://0.0.0.0:28332 -zmqpubrawtx=tcp://0.0.0.0:28333 -rpcbind=0.0.0.0 -rpcallowip=${RPCALLOWIP:-172.19.1.0/24} -rpcuser=${RPCUSER:-foo} -rpcpassword=${RPCPASSWORD:-bar}
     restart: "unless-stopped"
 
   lnd:
@@ -31,7 +31,8 @@ services:
     - BITCOIND_RPCHOST=bitcoind-testnet
     - BITCOIND_RPCUSER=${RPCUSER:-foo}
     - BITCOIND_RPCPASS=${RPCPASSWORD:-bar}
-    - BITCOIND_ZMQPATH=tcp://bitcoind-testnet:28332
+    - BITCOIND_ZMQPUBRAWBLOCK=tcp://bitcoind-testnet:28332
+    - BITCOIND_ZMQPUBRAWTX=tcp://bitcoind-testnet:28333
     - DEBUGLEVEL=info
     - EXTERNALIP=${EXTERNAL_IP:-lightning.example.com}
     - RESTLISTEN=0.0.0.0:8080
