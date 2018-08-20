@@ -8,7 +8,7 @@ services:
         ipv4_address: ${BITCOIND_IPV4:-172.19.1.110}
     volumes:
       - "${BITCOIND_DATA_PATH:-bitcoin-data}:/home/bitcoin/.bitcoin"
-    command: -printtoconsole -testnet -txindex -zmqpubrawblock=tcp://0.0.0.0:28332 -zmqpubrawtx=tcp://0.0.0.0:28333 -rpcbind=0.0.0.0 -rpcallowip=${RPCALLOWIP:-172.19.1.0/24} -rpcuser=${RPCUSER:-foo} -rpcpassword=${RPCPASSWORD:-bar}
+    command: -printtoconsole -testnet -txindex -zmqpubrawblock=tcp://0.0.0.0:28332 -zmqpubrawtx=tcp://0.0.0.0:28333 -rpcbind=0.0.0.0 -rpcallowip=${RPCALLOWIP:-172.19.1.0/24} -rpcuser=${RPCUSER:-foo} -rpcpassword=${RPCPASSWORD:-bar} -minrelaytxfee=0
     restart: "unless-stopped"
 
   lnd:
