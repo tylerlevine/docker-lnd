@@ -62,8 +62,8 @@ services:
       - LND_HOST=${LNDREST_LND_HOST:-lnd}
       - LND_RPC_PORT=${LNDREST_LND_PORT:-10009}
       - CERT_PATH=/root/.lnd/tls.cert
-      - READONLY_MACAROON_PATH=/root/.lnd/readonly.macaroon
-      - INVOICE_MACAROON_PATH=/root/.lnd/invoice.macaroon
+      - READONLY_MACAROON_PATH=/root/.lnd/data/chain/bitcoin/testnet/readonly.macaroon
+      - INVOICE_MACAROON_PATH=/root/.lnd/data/chain/bitcoin/testnet/invoice.macaroon
 networks:
   btc_lightning_net:
     driver: bridge
