@@ -4,9 +4,15 @@ services:
   - docker
 
 script:
+- git clone https://github.com/lightningnetwork/lnd.git lnd-source
+- docker build -t lnd:latest lnd-source
+- docker build -t tylevine/lnd:latest lnd-ext
+
+deploy:
+  provider: script
+  script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - ./lnd/travis-build-command.sh
-  - ./lnd-ext/docker-build-command.sh
-  - docker push tylevine/lnd
-  - docker push tylevine/lnd-ext
+  - docker push tylevine/lnd:latest
+  on:
+    branch: master
 
