@@ -4,4 +4,4 @@
 set -e
 
 # build docker image
-docker build -t fuzzle/lnd:latest -f docker/lnd/Dockerfile .
+docker build -t tylevine/lnd:latest -f docker/lnd/Dockerfile .

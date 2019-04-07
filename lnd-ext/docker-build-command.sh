@@ -4,5 +4,5 @@
 set -e
 
 # build docker image
-docker build -t fuzzle/lnd-ext:latest .
+docker build -t tylevine/lnd-ext:latest .
 
