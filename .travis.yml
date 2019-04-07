@@ -4,9 +4,9 @@ services:
   - docker
 
 script:
-- git clone https://github.com/lightningnetwork/lnd.git lnd-source
-- docker build -t lnd:latest lnd-source
-- docker build -t tylevine/lnd:latest lnd-ext
+- git clone https://github.com/lightningnetwork/lnd.git
+- docker build -t lnd:latest lnd
+- docker build -t tylevine/lnd:latest .
 
 deploy:
   provider: script
