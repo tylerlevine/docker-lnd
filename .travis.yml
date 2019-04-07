@@ -1,18 +1,19 @@
 language: minimal
-
 services:
-  - docker
-
+- docker
 script:
 - git clone https://github.com/lightningnetwork/lnd.git
 - docker build -t lnd:latest lnd
-- docker build -t tylevine/lnd:latest .
-
+- docker build -t lnd:latest .
 deploy:
   provider: script
   script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker push tylevine/lnd:latest
+  - docker tag lnd:latest $DOCKER_USERNAME/lnd:latest
+  - docker push $DOCKER_USERNAME/lnd:latest
   on:
     branch: master
-
+env:
+  global:
+  - secure: bgJv9ZK2nSi6YZHHAg0/XKShIkLgJmun4c1k8jO+/v5wX9OW9XOPri6lY3maPkebx+ZVB9PryykBsqYSP0vGd6eFVSO8TApYL2VixCC5CPMN873r9aY/Dw1IJvn8VsfidXv969birb1BnGm3ZBvLNrBRbGxNH9cLtDVN0FipY6XqAGL/MinPrHkWuN70VhbGLhqwa4L/apS1CFT6NxCtEVLV8jsWtW+XdKmuFeci6faj3QZZ6juBLcXAk3ZjAcSzeX+wQQyAFYYpRu+jYRlLv9MhSQ/jcG0QuODjUnml1iQ8i67j7BLoxmVKvCO8DIR/Mw9dznhx7doMXPrp/JLumbH14YHH/mZbxmGs8L7eoR/jvMBr8ncWj9BYf+z7zGMzm7Ht+GqihHWYE2UkIjTqPefuzsivtBQsQ94e4eP9SCcR1OGxlwkCF4QhMxEkaaWEmp5vd2/3kw9A9VjHvbAaLvr+9sLb26BSiE4766x3I7S+4zEhfAv8iv9IBq3VBtOvmhZXCfW5miDKRFuXfvDSN2grgGJPXqxRd5o2C8Udql4OZhvSyxqAUstdYYXdqsIPTOXqlvXFl4LXG35ddym2Er7YZUm7rh+d1ETUdBGyigyZQFFgXc4yxiEG1MWV7IzPA6gFyWt0JvB9KokljMCiSQNjt6frFDd4fUqchk5ewxs=
+  - secure: BpUKw2eekbx3GTzEOppDSrBnfwHPkBYh0PR9ajdQjLjqW9DEmp9cfs4FkWXQJ1haY9zFzUQB+zpXYd9ann3saxfqbQhe570Y/lootP//TYOri3hJR5SQuTPbWWpUoy0+rGw1QI9XUpHhzOx4MNSop5BxwYjy0Nf0YV8gY8KwwBBDw7eQ5bexry+opFJcerKtwymJ1P7rsspl93Ldpu7JLf48zp5vjYVBXQuMRW6pLFLob7GyWjcO43DVn/oAiUg57mT22ASrXr6GTg+1VE+v2JI2vz2qtp8oIyK0Ztqwtl8SSVMXWVUEEyKi6CWvJuNhdP6vseNQTa6P+tpjDI3BKarNJr/hdz7tWkniyZkfA8HskMhYC299jrgxx0Q69AwLKIqjPOTjOEZYO7NXs2DByH38auxaw0RlZOv4uz5SQusXIstRuMng6kq9uSUbiMd+pi2xhl3sivijQ9OJctWWxdxKW6XO3m3HcnBStVkkR72l69pIlIZoNNqNQzD3SoxpwQaekV2MNLkDef44DU3rgRmZ+ucc2JfP61ecH6E1E3K/bNPdQ+yrMWDU/hfkd/tBaEIsO2ndVDhbm3eY9qYuiScLUYmkAVAe5IPFGmPIzhWEARptlj2PO+wpXGj+3tldiQy2wE2ic06cLzE1QgBIFQYhm3Zi0Bj53LSncf/VweM=
