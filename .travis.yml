@@ -7,10 +7,7 @@ script:
 - docker build -t lnd:latest .
 deploy:
   provider: script
-  script:
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker tag lnd:latest $DOCKER_USERNAME/lnd:latest
-  - docker push $DOCKER_USERNAME/lnd:latest
+  script: ./deploy.sh
   on:
     branch: master
 env:
