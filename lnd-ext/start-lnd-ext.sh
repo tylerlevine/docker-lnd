@@ -102,20 +102,29 @@ cli_opts=( ["LNDDIR"]="--lnddir="
            ["TOR_STREAMISOLATION"]="--tor.streamisolation" )
 
 CLI_ARGS=('')
+SAFE_CLI_ARGS=('')
 
 add_if_exists() {
   VAR_NAME=$1
   VAR_VALUE="${!1}"
 
   if [[ -n "$VAR_VALUE" ]]; then
+    OPT="${cli_opts[${VAR_NAME}]}"
     if [[ $VAR_VALUE == 'y' ]]; then
-      CLI_ARGS=("${CLI_ARGS[@]}" "${cli_opts[${VAR_NAME}]}")
+      CLI_ARGS=("${CLI_ARGS[@]}" "$OPT")
+      SAFE_CLI_ARGS=("${SAFE_CLI_ARGS[@]}" "$OPT")
     else
-      CLI_ARGS=("${CLI_ARGS[@]}" "${cli_opts[${VAR_NAME}]}$VAR_VALUE")
+      CLI_ARGS=("${CLI_ARGS[@]}" "$OPT$VAR_VALUE")
+      if [[ "$VAR_NAME" == *"USER"* ]] || [[ "$VAR_NAME" == *"PASS"* ]]; then
+        SAFE_CLI_ARGS=("${SAFE_CLI_ARGS[@]}" "$OPT*")
+      else
+        SAFE_CLI_ARGS=("${SAFE_CLI_ARGS[@]}" "$OPT$VAR_VALUE")
+      fi
     fi
   fi
 }
 
 for lala in "${!cli_opts[@]}"; do add_if_exists "$lala"; done
-echo "Starting lnd with the following options:" ${CLI_ARGS[@]} "$@"
+
+echo "Starting lnd with the following options:" ${SAFE_CLI_ARGS[@]} "$@"
 exec lnd ${CLI_ARGS[@]} "$@"
