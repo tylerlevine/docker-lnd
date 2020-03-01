@@ -3,6 +3,7 @@ services:
 - docker
 script:
 - git clone https://github.com/lightningnetwork/lnd.git
+- sed -i -r "s/(make install .*)\"$/\1 monitoring\"/" lnd/Dockerfile
 - docker build -t lnd:latest lnd
 - docker build -t lnd:latest .
 deploy:
